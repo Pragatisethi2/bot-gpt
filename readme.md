@@ -21,7 +21,7 @@ A production-grade conversational AI platform with LLM integration and RAG (Retr
 - SQLite - Lightweight database
 
 **AI/ML:**
-- Google Gemini 2.0 Flash Lite - LLM for responses
+- Google Gemini 2.5 Flash Lite - LLM for responses
 - text-embedding-004 - Document embeddings
 - NumPy - Cosine similarity for vector search
 - PyPDF2 - PDF text extraction
