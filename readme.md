@@ -507,7 +507,7 @@ This project is created as a case study assignment for BOT Consulting.
 
 **Pragati Sethi**
 - Email: pragatisethi2@gmail.com
-- GitHub: [Your GitHub Profile]
+
 
 ## 🙏 Acknowledgments
 
