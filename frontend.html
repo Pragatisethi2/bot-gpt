@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOT GPT - AI Chat Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            height: 95vh;
+            background: #1e1e1e;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: flex;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .login-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1e1e1e;
+        }
+
+        .login-box {
+            background: #2a2a2a;
+            padding: 40px;
+            border-radius: 16px;
+            width: 400px;
+            border: 1px solid #333;
+        }
+
+        .login-box h2 {
+            margin-bottom: 30px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #1e1e1e;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #00b8e6;
+            transform: translateY(-2px);
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #252525;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #2a2a2a;
+            border-bottom: 1px solid #333;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            color: #00d4ff;
+        }
+
+        .user-info {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .new-chat-btn {
+            margin: 15px;
+            padding: 12px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .new-chat-btn:hover {
+            background: #00b8e6;
+            transform: translateY(-2px);
+        }
+
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .history-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .history-item:hover {
+            background: #333;
+            border-color: #00d4ff;
+        }
+
+        .history-item.active {
+            background: #333;
+            border-color: #00d4ff;
+        }
+
+        .history-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .history-meta {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .logout-btn {
+            margin: 15px;
+            padding: 10px;
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #b71c1c;
+        }
+
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1a1a;
+        }
+
+        .header {
+            background: #2a2a2a;
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: #00d4ff;
+        }
+
+        .mode-info {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .upload-section {
+            background: #2a2a2a;
+            padding: 15px;
+            display: none;
+            border-bottom: 1px solid #333;
+        }
+
+        .upload-section.show {
+            display: block;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            flex: 1;
+            padding: 8px;
+            background: #1a1a1a;
+            color: #fff;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .upload-btn:hover {
+            background: #00b8e6;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #1a1a1a;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: #00d4ff;
+            color: #000;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.bot .message-content {
+            background: #2a2a2a;
+            color: #fff;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: #252525;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 25px;
+            font-size: 14px;
+            color: #fff;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .input-area input:focus {
+            border-color: #00d4ff;
+        }
+
+        .send-btn, .delete-btn {
+            padding: 12px 24px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .delete-btn {
+            background: #d32f2f;
+            color: #fff;
+        }
+
+        .send-btn:hover {
+            background: #00b8e6;
+            transform: scale(1.05);
+        }
+
+        .delete-btn:hover {
+            background: #b71c1c;
+        }
+
+        .send-btn:disabled, .delete-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .loading {
+            display: flex;
+            gap: 5px;
+            padding: 12px;
+        }
+
+        .loading span {
+            width: 8px;
+            height: 8px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .loading span:nth-child(1) { animation-delay: -0.32s; }
+        .loading span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .info-text {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .error-text {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .success-text {
+            color: #51cf66;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-content {
+            background: #2a2a2a;
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid #444;
+            text-align: center;
+            min-width: 350px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .modal-content p {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn.chat {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        .modal-btn.chat:hover {
+            background: #00b8e6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+        }
+
+        .modal-btn.rag {
+            background: #9c27b0;
+            color: #fff;
+        }
+
+        .modal-btn.rag:hover {
+            background: #7b1fa2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(156, 39, 176, 0.4);
+        }
+
+        .modal-btn.cancel {
+            background: transparent;
+            color: #999;
+            border: 1px solid #444;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #333;
+            border-color: #666;
+        }
+
+        .modal-btn span {
+            font-size: 20px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h2>🤖 BOT GPT Login</h2>
+            <input type="text" id="loginName" placeholder="Enter your name" required>
+            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+            <button class="login-btn" id="loginBtn">Login</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="mainApp">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🤖 BOT GPT</h2>
+                <div class="user-info">
+                    <div id="userName">User</div>
+                    <div id="userEmail" style="font-size: 11px;"></div>
+                </div>
+            </div>
+
+            <button class="new-chat-btn" id="newChatBtn">+ New Conversation</button>
+
+            <div class="chat-history" id="chatHistory">
+            </div>
+
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+
+        <div class="main-area">
+            <div class="header">
+                <h1 id="chatTitle">Select or create a conversation</h1>
+                <div class="mode-info" id="modeInfo"></div>
+            </div>
+
+            <div class="upload-section" id="uploadSection">
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" accept=".pdf,.docx,.txt">
+                    <button class="upload-btn" id="uploadBtn">Upload Document</button>
+                </div>
+                <p class="info-text" id="uploadInfo">Upload a document to enable RAG mode</p>
+            </div>
+
+            <div class="chat-area" id="chatArea">
+                <div class="message bot">
+                    <div class="message-content">
+                        Welcome! Create a new conversation or select one from the history. 👋
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Type your message..." disabled>
+                <button class="send-btn" id="sendBtn" disabled>Send</button>
+                <button class="delete-btn" id="deleteBtn" disabled>Delete Chat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000/api';
+        let currentUser = null;
+        let conversationId = null;
+        let currentMode = 'chat';
+        let documentUploaded = false;
+
+        const loginScreen = document.getElementById('loginScreen');
+        const mainApp = document.getElementById('mainApp');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginName = document.getElementById('loginName');
+        const loginEmail = document.getElementById('loginEmail');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const chatHistory = document.getElementById('chatHistory');
+        const chatArea = document.getElementById('chatArea');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const uploadSection = document.getElementById('uploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadInfo = document.getElementById('uploadInfo');
+        const chatTitle = document.getElementById('chatTitle');
+        const modeInfo = document.getElementById('modeInfo');
+
+        loginBtn.addEventListener('click', async () => {
+            const name = loginName.value.trim();
+            const email = loginEmail.value.trim();
+
+            if (!name || !email) {
+                alert('Please enter both name and email');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/users?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                currentUser = data;
+                userName.textContent = data.name;
+                userEmail.textContent = data.email;
+                
+                loginScreen.classList.add('hidden');
+                mainApp.classList.remove('hidden');
+                
+                loadChatHistory();
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            conversationId = null;
+            loginScreen.classList.remove('hidden');
+            mainApp.classList.add('hidden');
+            loginName.value = '';
+            loginEmail.value = '';
+            chatArea.innerHTML = '';
+            chatHistory.innerHTML = '';
+        });
+
+        newChatBtn.addEventListener('click', () => {
+            showModeSelectionModal();
+        });
+
+        function showModeSelectionModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>Choose Conversation Mode</h3>
+                    <p>Select how you want to interact with the AI</p>
+                    <button class="modal-btn chat" id="modalNormalChat">
+                        <span>💬</span>
+                        <div>
+                            <div>Normal Chat</div>
+                            <div style="font-size: 12px; font-weight: normal; margin-top: 4px;">General conversation with AI</div>
+                        </div>
+                    </button>
+                    <button class="modal-btn rag" id="modalRagChat">
+                        <span>📄</span>
+                        <div>
+                            <div>Document Chat (RAG)</div>
+                            <div style="font-size: 12px; font-weight: normal; margin-top: 4px;">Chat with your uploaded documents</div>
+                        </div>
+                    </button>
+                    <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            document.getElementById('modalNormalChat').addEventListener('click', () => {
+                document.body.removeChild(modal);
+                createConversation('chat');
+            });
+            
+            document.getElementById('modalRagChat').addEventListener('click', () => {
+                document.body.removeChild(modal);
+                createConversation('rag');
+            });
+            
+            document.getElementById('modalCancel').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+
+        async function loadChatHistory() {
+            try {
+                const response = await fetch(`${API_URL}/conversations?user_id=${currentUser.user_id}`);
+                const conversations = await response.json();
+                
+                chatHistory.innerHTML = '';
+                
+                conversations.forEach(conv => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.dataset.convId = conv.id;
+                    historyItem.innerHTML = `
+                        <div class="history-title">${conv.title}</div>
+                        <div class="history-meta">
+                            ${conv.mode.toUpperCase()} • ${new Date(conv.last_updated).toLocaleDateString()}
+                        </div>
+                    `;
+                    historyItem.addEventListener('click', () => loadConversation(conv.id));
+                    chatHistory.appendChild(historyItem);
+                });
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        async function loadConversation(convId) {
+            try {
+                const response = await fetch(`${API_URL}/conversations/${convId}`);
+                const data = await response.json();
+                
+                conversationId = data.conversation.id;
+                currentMode = data.conversation.mode;
+                chatTitle.textContent = data.conversation.title;
+                
+                if (currentMode === 'rag') {
+                    try {
+                        const docResponse = await fetch(`${API_URL}/conversations/${convId}/documents`);
+                        if (docResponse.ok) {
+                            const docs = await docResponse.json();
+                            documentUploaded = docs && docs.length > 0;
+                        } else {
+                            documentUploaded = false;
+                        }
+                    } catch {
+                        documentUploaded = false;
+                    }
+                    
+                    uploadSection.classList.add('show');
+                    modeInfo.textContent = `RAG Mode ${documentUploaded ? '(Document uploaded ✓)' : '(No document)'}`;
+                    
+                    if (documentUploaded) {
+                        uploadInfo.textContent = 'Document already uploaded';
+                        uploadInfo.className = 'success-text';
+                    } else {
+                        uploadInfo.textContent = 'Please upload a document';
+                        uploadInfo.className = 'info-text';
+                    }
+                } else {
+                    uploadSection.classList.remove('show');
+                    modeInfo.textContent = 'Normal Chat Mode';
+                    documentUploaded = false;
+                }
+                
+                chatArea.innerHTML = '';
+                data.messages.forEach(msg => {
+                    addMessage(msg.role === 'user' ? 'user' : 'bot', msg.content);
+                });
+                
+                if (currentMode === 'chat') {
+                    messageInput.disabled = false;
+                    sendBtn.disabled = false;
+                } else {
+                    messageInput.disabled = !documentUploaded;
+                    sendBtn.disabled = !documentUploaded;
+                }
+                
+                deleteBtn.disabled = false;
+                
+                document.querySelectorAll('.history-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (parseInt(item.dataset.convId) === convId) {
+                        item.classList.add('active');
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading conversation:', error);
+            }
+        }
+
+        async function createConversation(mode) {
+            try {
+                const response = await fetch(`${API_URL}/conversations`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        first_message: mode === 'chat' ? 'Hello' : 'I want to analyze a document',
+                        mode: mode
+                    })
+                });
+                const data = await response.json();
+                conversationId = data.conversation_id;
+                currentMode = mode;
+                documentUploaded = false;
+                chatTitle.textContent = mode === 'chat' ? 'New Chat' : 'New Document Chat';
+                
+                chatArea.innerHTML = '';
+                addMessage('bot', data.response);
+                
+                if (mode === 'chat') {
+                    uploadSection.classList.remove('show');
+                    modeInfo.textContent = 'Normal Chat Mode';
+                    messageInput.disabled = false;
+                    sendBtn.disabled = false;
+                } else {
+                    uploadSection.classList.add('show');
+                    modeInfo.textContent = 'RAG Mode (Upload document required)';
+                    uploadInfo.textContent = 'Please upload a document to continue';
+                    uploadInfo.className = 'info-text';
+                    messageInput.disabled = true;
+                    sendBtn.disabled = true;
+                }
+                
+                deleteBtn.disabled = false;
+                loadChatHistory();
+            } catch (error) {
+                console.error('Error creating conversation:', error);
+            }
+        }
+
+        async function sendMessage(message) {
+            if (!message.trim() || !conversationId) return;
+
+            if (currentMode === 'rag' && !documentUploaded) {
+                alert('Please upload a document first!');
+                return;
+            }
+
+            addMessage('user', message);
+            messageInput.value = '';
+            sendBtn.disabled = true;
+
+            showLoading();
+
+            try {
+                const response = await fetch(`${API_URL}/conversations/${conversationId}/messages`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: message })
+                });
+                const data = await response.json();
+                
+                removeLoading();
+                
+                if (data.error) {
+                    addMessage('bot', '❌ ' + data.error);
+                } else {
+                    addMessage('bot', data.response);
+                }
+                
+                loadChatHistory();
+            } catch (error) {
+                removeLoading();
+                console.error('Error sending message:', error);
+                addMessage('bot', 'Error sending message. Please try again.');
+            }
+
+            sendBtn.disabled = false;
+        }
+
+        async function uploadDocument() {
+            const file = fileInput.files[0];
+            if (!file) {
+                uploadInfo.textContent = 'Please select a file first';
+                uploadInfo.className = 'error-text';
+                return;
+            }
+
+            if (!conversationId) {
+                uploadInfo.textContent = 'Please create a RAG conversation first';
+                uploadInfo.className = 'error-text';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('title', file.name);
+
+            uploadBtn.disabled = true;
+            uploadInfo.textContent = 'Uploading and processing...';
+            uploadInfo.className = 'info-text';
+
+            try {
+                const response = await fetch(`${API_URL}/conversations/${conversationId}/documents`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.status === 'uploaded') {
+                    uploadInfo.innerHTML = `✓ ${data.filename} uploaded!<br>Chunks: ${data.chunks_count} | Embeddings: ${data.embeddings_count || data.chunks_count}`;
+                    uploadInfo.className = 'success-text';
+                    documentUploaded = true;
+                    messageInput.disabled = false;
+                    sendBtn.disabled = false;
+                    modeInfo.textContent = 'RAG Mode (Document uploaded ✓)';
+                    addMessage('bot', `Document "${data.title}" processed successfully! ${data.chunks_count} chunks created. You can now ask questions about it.`);
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (error) {
+                console.error('Error uploading document:', error);
+                uploadInfo.textContent = '❌ Upload failed. Please try again.';
+                uploadInfo.className = 'error-text';
+            }
+
+            uploadBtn.disabled = false;
+        }
+
+        async function deleteConversation() {
+            if (!conversationId) return;
+            
+            if (!confirm('Are you sure you want to delete this conversation?')) return;
+
+            try {
+                await fetch(`${API_URL}/conversations/${conversationId}`, {
+                    method: 'DELETE'
+                });
+                
+                conversationId = null;
+                documentUploaded = false;
+                chatArea.innerHTML = '';
+                chatTitle.textContent = 'Select or create a conversation';
+                modeInfo.textContent = '';
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+                deleteBtn.disabled = true;
+                uploadSection.classList.remove('show');
+                
+                loadChatHistory();
+                
+                addMessage('bot', 'Conversation deleted. Create a new one or select from history.');
+            } catch (error) {
+                console.error('Error deleting conversation:', error);
+                alert('Failed to delete conversation');
+            }
+        }
+
+        function addMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = text;
+            
+            messageDiv.appendChild(contentDiv);
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function showLoading() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = 'loadingMessage';
+            loadingDiv.innerHTML = `
+                <div class="message-content loading">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            chatArea.appendChild(loadingDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function removeLoading() {
+            const loadingMsg = document.getElementById('loadingMessage');
+            if (loadingMsg) loadingMsg.remove();
+        }
+
+        sendBtn.addEventListener('click', () => sendMessage(messageInput.value));
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage(messageInput.value);
+        });
+        uploadBtn.addEventListener('click', uploadDocument);
+        deleteBtn.addEventListener('click', deleteConversation);
+    </script>
+</body>
+</html>
